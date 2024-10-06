@@ -1,0 +1,54 @@
+-- Criação de variáveis essenciais
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ScreenGui = Instance.new("ScreenGui")
+local MenuFrame = Instance.new("Frame")
+local FloatingButton = Instance.new("TextButton")
+local FruitButton = Instance.new("TextButton")
+local TeleportButton = Instance.new("TextButton")
+
+-- Configuração da interface do usuário
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Configurando o botão flutuante redondo
+FloatingButton.Size = UDim2.new(0, 60, 0, 60) -- Tamanho do botão
+FloatingButton.Position = UDim2.new(0.9, 0, 0.9, 0) -- Posição do botão
+FloatingButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+FloatingButton.Text = "🐲" -- Emoji
+FloatingButton.TextSize = 30
+FloatingButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+FloatingButton.AutoButtonColor = true
+FloatingButton.Parent = ScreenGui
+
+-- Configurando o menu
+MenuFrame.Size = UDim2.new(0, 300, 0, 400) -- Tamanho do menu
+MenuFrame.Position = UDim2.new(0.5, -150, 0.5, -200) -- Centraliza o menu
+MenuFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MenuFrame.Visible = false -- Começa invisível
+MenuFrame.Parent = ScreenGui
+
+-- Botão para localizar frutas
+FruitButton.Size = UDim2.new(1, 0, 0, 50) -- Tamanho do botão de localizar frutas
+FruitButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+FruitButton.Text = "Localizar Frutas"
+FruitButton.Parent = MenuFrame
+
+-- Botão para teleportar para a fruta
+TeleportButton.Size = UDim2.new(1, 0, 0, 50) -- Tamanho do botão de teleportar
+TeleportButton.Position = UDim2.new(0, 0, 0.2, 0) -- Abaixo do botão de frutas
+TeleportButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+TeleportButton.Text = "Teleportar para Fruta"
+TeleportButton.Parent = MenuFrame
+
+-- Função para abrir/fechar o menu
+FloatingButton.MouseButton1Click:Connect(function()
+    MenuFrame.Visible = not MenuFrame.Visible -- Alterna a visibilidade do menu
+end)
+
+-- Carregando os scripts de funcionalidades
+local locateFruitModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Los-SCP-Script-Automator/main/locate_fruit.lua"))()
+local teleportFruitModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Los-SCP-Script-Automator/main/teleport_fruit.lua"))()
+
+-- Conectando os botões às funções dos módulos
+FruitButton.MouseButton1Click:Connect(locateFruitModule)
+TeleportButton.MouseButton1Click:Connect(teleportFruitModule)
