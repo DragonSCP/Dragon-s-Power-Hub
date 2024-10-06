@@ -1,1 +1,80 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local MyLevel = LocalPlayer.Data.Level.Value
 
+-- Função de Auto Farm Level
+function AutoFarmLevel()
+    local Mon, LevelQuest, NameQuest, NameMon, CFrameQuest, CFrameMon
+
+    -- Determinando o monstro e as coordenadas da quest com base no nível
+    if MyLevel == 1 or MyLevel <= 9 then
+        Mon = "Bandit"
+        LevelQuest = 1
+        NameQuest = "BanditQuest1"
+        NameMon = "Bandit"
+        CFrameQuest = CFrame.new(1059.37195, 15.4495068, 1550.4231)
+        CFrameMon = CFrame.new(1045.962646484375, 27.00250816345215, 1560.8203125)
+    elseif MyLevel == 10 or MyLevel <= 14 then
+        Mon = "Monkey"
+        LevelQuest = 1
+        NameQuest = "JungleQuest"
+        NameMon = "Monkey"
+        CFrameQuest = CFrame.new(-1598.08911, 35.5501175, 153.377838)
+        CFrameMon = CFrame.new(-1448.51806640625, 67.85301208496094, 11.46579647064209)
+    elseif MyLevel == 15 or MyLevel <= 29 then
+        Mon = "Pirate"
+        LevelQuest = 2
+        NameQuest = "PirateQuest"
+        NameMon = "Pirate"
+        CFrameQuest = CFrame.new(12.0, 9.5, -368.0)
+        CFrameMon = CFrame.new(30.0, 5.0, -370.0)
+    end
+
+    print("Fazendo quest:", NameQuest)
+    print("Farmando:", NameMon)
+
+    -- Teleportar para a Quest
+    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrameQuest
+    wait(1) -- Espera um segundo para garantir o teleporte
+
+    -- Carregar a lógica de ataque
+    local success, attackScript = pcall(function()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/Ataque"))()
+    end)
+
+    if not success then
+        warn("Falha ao carregar o script de ataque: " .. attackScript)
+        return
+    end
+
+    -- Lógica para atacar o monstro
+    function attack(monsterName, monsterCFrame)
+        -- Teleportar para o monstro
+        LocalPlayer.Character.HumanoidRootPart.CFrame = monsterCFrame
+        wait(0.5) -- Espera um pouco para garantir a posição
+        
+        -- Ativar o ataque
+        print("Atacando o:", monsterName)
+
+        -- Aqui você pode adicionar a lógica de ataque, como usar habilidades
+        -- Por exemplo, você pode simular um clique ou usar uma habilidade
+        local humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid:MoveTo(monsterCFrame.Position)
+            wait(0.5) -- Espera um pouco antes de atacar
+            -- Execute a lógica de ataque real aqui
+            -- Por exemplo, se você tiver uma função de ataque definida no script de ataque carregado, chame-a aqui
+            if attackScript and type(attackScript.attack) == "function" then
+                attackScript.attack(monsterName) -- Chama a função de ataque do script carregado
+            else
+                warn("Função de ataque não encontrada no script de ataque.")
+            end
+        end
+    end
+
+    -- Chame a função de ataque com o monstro correto
+    attack(NameMon, CFrameMon)
+end
+
+-- Chame a função AutoFarmLevel quando o botão "Auto Farm Level" for clicado
+AutoFarmLevel()
