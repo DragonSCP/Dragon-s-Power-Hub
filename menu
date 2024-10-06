@@ -30,12 +30,6 @@ local function createButton(parent, name, position)
     return button
 end
 
--- Função para carregar o flutuante
-local function loadFlutuante()
-    -- Aqui você pode usar o código do flutuante
-    -- Exemplo: require("Flutuante") ou o que for necessário para carregar o flutuante
-end
-
 -- Configurações do GUI
 ScreenGui.Parent = game.CoreGui
 MainFrame.Parent = ScreenGui
@@ -153,19 +147,17 @@ for _, data in ipairs(buttonsData) do
             chestLabel.TextSize = 24
             chestLabel.Text = "Funcionalidade de Chest em breve"
         end
-        
-        -- Adiciona botão de voltar
-        local backButton = createButton(CentralArea, "🔙 Voltar", UDim2.new(0, 0, 0.8, 0))
-        backButton.MouseButton1Click:Connect(function()
-            -- Limpar área central
-            for _, child in pairs(CentralArea:GetChildren()) do
-                if child:IsA("TextLabel") or child:IsA("TextButton") then
-                    child:Destroy()
-                end
-            end
-            
-            -- Carregar o flutuante
-            loadFlutuante()
-        end)
     end)
 end
+
+-- Criação do botão de voltar
+local backButton = createButton(SidePanel, "🔙 Voltar", UDim2.new(0, 0, 0.5, 0))
+
+-- Conectar evento de clique do botão de voltar
+backButton.MouseButton1Click:Connect(function()
+    -- Fechar o menu atual
+    ScreenGui:Destroy() -- Destrói a GUI atual
+    
+    -- Carregar o flutuante
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/Flutuante"))()
+end)
