@@ -1,0 +1,151 @@
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local SidePanel = Instance.new("Frame")
+local CentralArea = Instance.new("Frame")
+local TitleLabel = Instance.new("TextLabel")
+local Separator = Instance.new("Frame")
+
+-- Função para criar um botão
+local function createButton(parent, name, position)
+    local button = Instance.new("TextButton")
+    button.Name = name
+    button.Parent = parent
+    button.Size = UDim2.new(1, 0, 0, 50)
+    button.Position = position
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.SourceSans
+    button.TextSize = 24
+    button.Text = name
+    button.AutoButtonColor = false
+    
+    -- Efeito ao passar o mouse (hover)
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    end)
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    end)
+    
+    return button
+end
+
+-- Configurações do GUI
+ScreenGui.Parent = game.CoreGui
+MainFrame.Parent = ScreenGui
+MainFrame.Size = UDim2.new(1, 0, 1, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+
+SidePanel.Parent = MainFrame
+SidePanel.Size = UDim2.new(0.2, 0, 1, 0)
+SidePanel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+
+CentralArea.Parent = MainFrame
+CentralArea.Size = UDim2.new(0.8, 0, 1, 0)
+CentralArea.Position = UDim2.new(0.2, 0, 0, 0)
+CentralArea.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+
+TitleLabel.Parent = CentralArea
+TitleLabel.Size = UDim2.new(1, 0, 0.1, 0)
+TitleLabel.Position = UDim2.new(0, 0, 0.45, 0)
+TitleLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.TextSize = 36
+TitleLabel.Text = "Dragon HUB"
+TitleLabel.TextScaled = true
+
+Separator.Parent = MainFrame
+Separator.Size = UDim2.new(0, 2, 1, 0)
+Separator.Position = UDim2.new(0.2, 0, 0, 0)
+Separator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Criação dos botões
+local buttonsData = {
+    {"Farm", UDim2.new(0, 0, 0, 0)},
+    {"Auto Farm", UDim2.new(0, 0, 0.1, 0)},
+    {"Teleport", UDim2.new(0, 0, 0.2, 0)},
+    {"Shop", UDim2.new(0, 0, 0.3, 0)},
+    {"Chest", UDim2.new(0, 0, 0.4, 0)},
+}
+
+for _, data in ipairs(buttonsData) do
+    local button = createButton(SidePanel, data[1], data[2])
+    
+    -- Conectar eventos de clique dos botões
+    button.MouseButton1Click:Connect(function()
+        -- Limpar área central
+        for _, child in pairs(CentralArea:GetChildren()) do
+            if child:IsA("TextLabel") or child:IsA("TextButton") then
+                child:Destroy()
+            end
+        end
+        
+        -- Exibir funções relacionadas ao botão
+        if data[1] == "Farm" then
+            local farmLabel = Instance.new("TextLabel")
+            farmLabel.Parent = CentralArea
+            farmLabel.Size = UDim2.new(1, 0, 0.1, 0)
+            farmLabel.Position = UDim2.new(0, 0, 0.2, 0)
+            farmLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            farmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            farmLabel.Font = Enum.Font.SourceSans
+            farmLabel.TextSize = 24
+            farmLabel.Text = "Auto Farm Level"
+            
+            local autoFarmNearest = farmLabel:Clone()
+            autoFarmNearest.Parent = CentralArea
+            autoFarmNearest.Text = "Auto Farm Nearest"
+            autoFarmNearest.Position = UDim2.new(0, 0, 0.35, 0)
+            
+            local autoPrintSS = farmLabel:Clone()
+            autoPrintSS.Parent = CentralArea
+            autoPrintSS.Text = "Auto Print SS"
+            autoPrintSS.Position = UDim2.new(0, 0, 0.5, 0)
+
+        elseif data[1] == "Auto Farm" then
+            local messageLabel = Instance.new("TextLabel")
+            messageLabel.Parent = CentralArea
+            messageLabel.Size = UDim2.new(1, 0, 0.1, 0)
+            messageLabel.Position = UDim2.new(0, 0, 0.45, 0)
+            messageLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            messageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            messageLabel.Font = Enum.Font.SourceSans
+            messageLabel.TextSize = 24
+            messageLabel.Text = "Menu estará ativo em breve"
+        
+        elseif data[1] == "Teleport" then
+            local teleportLabel = Instance.new("TextLabel")
+            teleportLabel.Parent = CentralArea
+            teleportLabel.Size = UDim2.new(1, 0, 0.1, 0)
+            teleportLabel.Position = UDim2.new(0, 0, 0.45, 0)
+            teleportLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            teleportLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            teleportLabel.Font = Enum.Font.SourceSans
+            teleportLabel.TextSize = 24
+            teleportLabel.Text = "Funcionalidade de Teleport em breve"
+
+        elseif data[1] == "Shop" then
+            local shopLabel = Instance.new("TextLabel")
+            shopLabel.Parent = CentralArea
+            shopLabel.Size = UDim2.new(1, 0, 0.1, 0)
+            shopLabel.Position = UDim2.new(0, 0, 0.45, 0)
+            shopLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            shopLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            shopLabel.Font = Enum.Font.SourceSans
+            shopLabel.TextSize = 24
+            shopLabel.Text = "Funcionalidade de Shop em breve"
+
+        elseif data[1] == "Chest" then
+            local chestLabel = Instance.new("TextLabel")
+            chestLabel.Parent = CentralArea
+            chestLabel.Size = UDim2.new(1, 0, 0.1, 0)
+            chestLabel.Position = UDim2.new(0, 0, 0.45, 0)
+            chestLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+            chestLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            chestLabel.Font = Enum.Font.SourceSans
+            chestLabel.TextSize = 24
+            chestLabel.Text = "Funcionalidade de Chest em breve"
+        end
+    end)
+end
