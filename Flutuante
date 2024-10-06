@@ -39,31 +39,24 @@ InfoLabel.Text = ""
 InfoLabel.Visible = false  -- Inicialmente oculto
 
 -- Função para carregar o script do link
-local function loadScriptFromLink(link)
-    -- Aqui você pode carregar o script
-    local success, err = pcall(function()
-        loadstring(game:HttpGet(link))()
-    end)
-    
-    if not success then
-        InfoLabel.Text = "Erro ao carregar o script: " .. err
-    else
-        InfoLabel.Text = "Script carregado com sucesso!"
-    end
-end
-
--- Conectar evento de clique do botão
-MenuButton.MouseButton1Click:Connect(function()
+local function loadScriptFromLink()
     InfoLabel.Text = "Carregando script..."
     InfoLabel.Visible = true
 
-    -- Insira aqui o link do script que você deseja carregar
-    local scriptLink = "https://raw.githubusercontent.com/DragonSCP/Los-SCP-Script-Automator/main/seu_script.lua"
-    loadScriptFromLink(scriptLink)
-    
+    -- Carregando os scripts de funcionalidades
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/menu"))()
+
+    -- Fechar o menu flutuante
+    FloatingMenu:Destroy() -- Remove o menu flutuante
+
+    -- Mensagem de sucesso
+    InfoLabel.Text = "Script carregado com sucesso!"
     wait(3) -- Mensagem fica visível por um tempo
     InfoLabel.Visible = false
-end)
+end
+
+-- Conectar evento de clique do botão
+MenuButton.MouseButton1Click:Connect(loadScriptFromLink)
 
 -- Adicionando o ScreenGui à tela
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
