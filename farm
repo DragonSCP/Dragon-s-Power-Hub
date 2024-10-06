@@ -1,0 +1,143 @@
+-- Criando o menu de farm
+local farmMenu = Instance.new("ScreenGui")
+local frame = Instance.new("Frame")
+
+-- Configurações do frame do menu
+frame.Size = UDim2.new(0.3, 0, 0.5, 0)
+frame.Position = UDim2.new(0.35, 0, 0.25, 0)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.Parent = farmMenu
+
+-- Título do script
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+title.Text = "Dragon Hub"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSans
+title.TextSize = 24
+title.Parent = frame
+
+-- Criando o parágrafo de seleção de arma
+local paragraph = Instance.new("TextLabel")
+paragraph.Size = UDim2.new(1, 0, 0, 50)
+paragraph.Position = UDim2.new(0, 0, 0.1, 0)
+paragraph.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+paragraph.Text = "Selecione sua arma"
+paragraph.TextColor3 = Color3.fromRGB(255, 255, 255)
+paragraph.Font = Enum.Font.SourceSans
+paragraph.TextSize = 20
+paragraph.Parent = frame
+
+-- Função para adicionar dropdown
+local function createDropdown(name, options, position, callback)
+    local dropdown = Instance.new("TextButton")
+    dropdown.Size = UDim2.new(1, 0, 0, 50)
+    dropdown.Position = position
+    dropdown.Text = name
+    dropdown.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+    dropdown.Parent = frame
+
+    dropdown.MouseButton1Click:Connect(callback)
+end
+
+-- Lista de armas
+local WeaponList = {"Soco", "Espada", "Fruta", "Arma"}
+_G.SelectWeapon = "Soco"
+
+-- Criando dropdown para selecionar arma
+createDropdown("Selecione a Arma", WeaponList, UDim2.new(0, 0, 0.2, 0), function()
+    local dropdown = Instance.new("TextButton")
+    local menu = Instance.new("Frame")
+    menu.Size = UDim2.new(0.3, 0, 0.2, 0)
+    menu.Position = UDim2.new(0.35, 0, 0.4, 0)
+    menu.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    menu.Parent = farmMenu
+
+    for _, weapon in ipairs(WeaponList) do
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(1, 0, 0, 50)
+        button.Position = UDim2.new(0, 0, 0, (_ * 0.2), 0)
+        button.Text = weapon
+        button.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.Parent = menu
+
+        button.MouseButton1Click:Connect(function()
+            _G.SelectWeapon = weapon
+            menu:Destroy()
+        end)
+    end
+end)
+
+-- Função para criar opções com status ativado/desativado
+local function createToggleOption(name, position, callback)
+    local option = Instance.new("TextLabel")
+    option.Size = UDim2.new(1, 0, 0, 50)
+    option.Position = position
+    option.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    option.Text = name .. " [X]"
+    option.TextColor3 = Color3.fromRGB(255, 255, 255)
+    option.Font = Enum.Font.SourceSans
+    option.TextSize = 20
+    option.Parent = frame
+
+    local isActive = false
+
+    option.MouseButton1Click:Connect(function()
+        isActive = not isActive
+        option.Text = name .. (isActive and " [√]" or " [X]")
+        callback(isActive)
+    end)
+end
+
+-- Exemplo de como adicionar uma opção de função ativar/desativar
+createToggleOption("Auto-Farm", UDim2.new(0, 0, 0.4, 0), function(isActive)
+    _G.AutoFarm = isActive
+end)
+
+-- Função para selecionar a arma conforme o tipo
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if _G.SelectWeapon == "Soco" then
+                for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Melee" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.SelectWeapon == "Espada" then
+                for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Espada" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.SelectWeapon == "Arma" then
+                for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Arma" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.SelectWeapon == "Fruta" then
+                for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Blox Fruit" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+-- Adicionando o menu à tela
+farmMenu.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
