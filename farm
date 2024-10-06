@@ -93,9 +93,13 @@ local function createToggleOption(name, position, callback)
     end)
 end
 
--- Exemplo de como adicionar uma opção de função ativar/desativar
+-- Opção de Auto-Farm
 createToggleOption("Auto-Farm", UDim2.new(0, 0, 0.4, 0), function(isActive)
     _G.AutoFarm = isActive
+    if isActive then
+        -- Carregar e executar o script de Auto-Farm
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/Farm%20level"))()
+    end
 end)
 
 -- Função para selecionar a arma conforme o tipo
