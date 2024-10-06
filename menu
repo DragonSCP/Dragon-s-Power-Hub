@@ -62,15 +62,15 @@ Separator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
 -- Criação dos botões
 local buttonsData = {
-    {"Farm", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/farm"},
-    {"Auto Farm", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/autoFarm"},
-    {"Teleport", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/teleport"},
-    {"Shop", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/shop"},
-    {"Chest", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/chest"},
+    {"Farm", UDim2.new(0, 0, 0, 0)},
+    {"Auto Farm", UDim2.new(0, 0, 0.1, 0)},
+    {"Teleport", UDim2.new(0, 0, 0.2, 0)},
+    {"Shop", UDim2.new(0, 0, 0.3, 0)},
+    {"Chest", UDim2.new(0, 0, 0.4, 0)},
 }
 
 for _, data in ipairs(buttonsData) do
-    local button = createButton(SidePanel, data[1], UDim2.new(0, 0, (#data - 1) * 0.1, 0))
+    local button = createButton(SidePanel, data[1], data[2])
 
     -- Conectar eventos de clique dos botões
     button.MouseButton1Click:Connect(function()
@@ -81,8 +81,30 @@ for _, data in ipairs(buttonsData) do
             end
         end
         
-        -- Carregar o menu do link
-        loadstring(game:HttpGet(data[2]))()
+        -- Exibir funções relacionadas ao botão
+        local messageLabel = Instance.new("TextLabel")
+        messageLabel.Parent = CentralArea
+        messageLabel.Size = UDim2.new(1, 0, 0.1, 0)
+        messageLabel.Position = UDim2.new(0, 0, 0.45, 0)
+        messageLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        messageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        messageLabel.Font = Enum.Font.SourceSans
+        messageLabel.TextSize = 24
+        
+        if data[1] == "Farm" then
+            messageLabel.Text = "Função de Farm ativada."
+        elseif data[1] == "Auto Farm" then
+            messageLabel.Text = "Executando Auto Farm..."
+            -- Fechar o menu atual e executar o Auto Farm
+            ScreenGui:Destroy() -- Destrói a GUI atual
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/farm"))() -- Executa o script do Auto Farm
+        elseif data[1] == "Teleport" then
+            messageLabel.Text = "Funcionalidade de Teleport em breve."
+        elseif data[1] == "Shop" then
+            messageLabel.Text = "Funcionalidade de Shop em breve."
+        elseif data[1] == "Chest" then
+            messageLabel.Text = "Funcionalidade de Chest em breve."
+        end
     end)
 end
 
