@@ -1,0 +1,69 @@
+-- Criação da GUI
+local ScreenGui = Instance.new("ScreenGui")
+local FloatingMenu = Instance.new("Frame")
+local MenuButton = Instance.new("TextButton")
+local InfoLabel = Instance.new("TextLabel")
+
+-- Configuração do FloatingMenu
+FloatingMenu.Parent = ScreenGui
+FloatingMenu.Size = UDim2.new(0.2, 0, 0.2, 0) -- Tamanho do menu
+FloatingMenu.Position = UDim2.new(0.4, 0, 0.4, 0) -- Posição do menu
+FloatingMenu.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+FloatingMenu.BorderSizePixel = 0
+FloatingMenu.AnchorPoint = Vector2.new(0.5, 0.5) -- Centraliza o menu
+
+-- Tornar o menu redondo
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = FloatingMenu
+UICorner.CornerRadius = UDim.new(0, 100) -- Raio para tornar o menu redondo
+
+-- Configuração do MenuButton
+MenuButton.Parent = FloatingMenu
+MenuButton.Size = UDim2.new(1, 0, 1, 0)
+MenuButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+MenuButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MenuButton.Font = Enum.Font.SourceSans
+MenuButton.TextSize = 24
+MenuButton.Text = "🐲 Aqui é o Brasil, tem que respeitar\nDragon Hub"
+MenuButton.TextWrapped = true -- Permite quebra de linha
+
+-- Configuração do InfoLabel
+InfoLabel.Parent = ScreenGui
+InfoLabel.Size = UDim2.new(0.5, 0, 0.1, 0)
+InfoLabel.Position = UDim2.new(0.25, 0, 0.75, 0)
+InfoLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+InfoLabel.Font = Enum.Font.SourceSans
+InfoLabel.TextSize = 20
+InfoLabel.Text = ""
+InfoLabel.Visible = false  -- Inicialmente oculto
+
+-- Função para carregar o script do link
+local function loadScriptFromLink(link)
+    -- Aqui você pode carregar o script
+    local success, err = pcall(function()
+        loadstring(game:HttpGet(link))()
+    end)
+    
+    if not success then
+        InfoLabel.Text = "Erro ao carregar o script: " .. err
+    else
+        InfoLabel.Text = "Script carregado com sucesso!"
+    end
+end
+
+-- Conectar evento de clique do botão
+MenuButton.MouseButton1Click:Connect(function()
+    InfoLabel.Text = "Carregando script..."
+    InfoLabel.Visible = true
+
+    -- Insira aqui o link do script que você deseja carregar
+    local scriptLink = "https://raw.githubusercontent.com/DragonSCP/Los-SCP-Script-Automator/main/seu_script.lua"
+    loadScriptFromLink(scriptLink)
+    
+    wait(3) -- Mensagem fica visível por um tempo
+    InfoLabel.Visible = false
+end)
+
+-- Adicionando o ScreenGui à tela
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
