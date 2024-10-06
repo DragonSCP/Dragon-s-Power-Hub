@@ -18,7 +18,7 @@ local function createButton(parent, name, position)
     button.TextSize = 24
     button.Text = name
     button.AutoButtonColor = false
-    
+
     -- Efeito ao passar o mouse (hover)
     button.MouseEnter:Connect(function()
         button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
@@ -26,7 +26,7 @@ local function createButton(parent, name, position)
     button.MouseLeave:Connect(function()
         button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     end)
-    
+
     return button
 end
 
@@ -62,16 +62,16 @@ Separator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 
 -- Criação dos botões
 local buttonsData = {
-    {"Farm", UDim2.new(0, 0, 0, 0)},
-    {"Auto Farm", UDim2.new(0, 0, 0.1, 0)},
-    {"Teleport", UDim2.new(0, 0, 0.2, 0)},
-    {"Shop", UDim2.new(0, 0, 0.3, 0)},
-    {"Chest", UDim2.new(0, 0, 0.4, 0)},
+    {"Farm", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/farm"},
+    {"Auto Farm", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/autoFarm"},
+    {"Teleport", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/teleport"},
+    {"Shop", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/shop"},
+    {"Chest", "https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/chest"},
 }
 
 for _, data in ipairs(buttonsData) do
-    local button = createButton(SidePanel, data[1], data[2])
-    
+    local button = createButton(SidePanel, data[1], UDim2.new(0, 0, (#data - 1) * 0.1, 0))
+
     -- Conectar eventos de clique dos botões
     button.MouseButton1Click:Connect(function()
         -- Limpar área central
@@ -81,72 +81,8 @@ for _, data in ipairs(buttonsData) do
             end
         end
         
-        -- Exibir funções relacionadas ao botão
-        if data[1] == "Farm" then
-            local farmLabel = Instance.new("TextLabel")
-            farmLabel.Parent = CentralArea
-            farmLabel.Size = UDim2.new(1, 0, 0.1, 0)
-            farmLabel.Position = UDim2.new(0, 0, 0.2, 0)
-            farmLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            farmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            farmLabel.Font = Enum.Font.SourceSans
-            farmLabel.TextSize = 24
-            farmLabel.Text = "Auto Farm Level"
-            
-            local autoFarmNearest = farmLabel:Clone()
-            autoFarmNearest.Parent = CentralArea
-            autoFarmNearest.Text = "Auto Farm Nearest"
-            autoFarmNearest.Position = UDim2.new(0, 0, 0.35, 0)
-            
-            local autoPrintSS = farmLabel:Clone()
-            autoPrintSS.Parent = CentralArea
-            autoPrintSS.Text = "Auto Print SS"
-            autoPrintSS.Position = UDim2.new(0, 0, 0.5, 0)
-
-        elseif data[1] == "Auto Farm" then
-            local messageLabel = Instance.new("TextLabel")
-            messageLabel.Parent = CentralArea
-            messageLabel.Size = UDim2.new(1, 0, 0.1, 0)
-            messageLabel.Position = UDim2.new(0, 0, 0.45, 0)
-            messageLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            messageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            messageLabel.Font = Enum.Font.SourceSans
-            messageLabel.TextSize = 24
-            messageLabel.Text = "Menu estará ativo em breve"
-        
-        elseif data[1] == "Teleport" then
-            local teleportLabel = Instance.new("TextLabel")
-            teleportLabel.Parent = CentralArea
-            teleportLabel.Size = UDim2.new(1, 0, 0.1, 0)
-            teleportLabel.Position = UDim2.new(0, 0, 0.45, 0)
-            teleportLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            teleportLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            teleportLabel.Font = Enum.Font.SourceSans
-            teleportLabel.TextSize = 24
-            teleportLabel.Text = "Funcionalidade de Teleport em breve"
-
-        elseif data[1] == "Shop" then
-            local shopLabel = Instance.new("TextLabel")
-            shopLabel.Parent = CentralArea
-            shopLabel.Size = UDim2.new(1, 0, 0.1, 0)
-            shopLabel.Position = UDim2.new(0, 0, 0.45, 0)
-            shopLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            shopLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            shopLabel.Font = Enum.Font.SourceSans
-            shopLabel.TextSize = 24
-            shopLabel.Text = "Funcionalidade de Shop em breve"
-
-        elseif data[1] == "Chest" then
-            local chestLabel = Instance.new("TextLabel")
-            chestLabel.Parent = CentralArea
-            chestLabel.Size = UDim2.new(1, 0, 0.1, 0)
-            chestLabel.Position = UDim2.new(0, 0, 0.45, 0)
-            chestLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-            chestLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            chestLabel.Font = Enum.Font.SourceSans
-            chestLabel.TextSize = 24
-            chestLabel.Text = "Funcionalidade de Chest em breve"
-        end
+        -- Carregar o menu do link
+        loadstring(game:HttpGet(data[2]))()
     end)
 end
 
@@ -157,7 +93,7 @@ local backButton = createButton(SidePanel, "🔙 Voltar", UDim2.new(0, 0, 0.5, 0
 backButton.MouseButton1Click:Connect(function()
     -- Fechar o menu atual
     ScreenGui:Destroy() -- Destrói a GUI atual
-    
-    -- Carregar o flutuante
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/Flutuante"))()
+
+    -- Carregar o menu principal
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/DragonSCP/Dragon-s-Power-Hub/refs/heads/main/menu"))()
 end)
