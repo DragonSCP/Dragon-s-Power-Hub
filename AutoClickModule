@@ -1,23 +1,43 @@
--- AutoClickModule.lua
 local AutoClickModule = {}
-
 local Players = game:GetService("Players")
 local VirtualUser = game:GetService("VirtualUser")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
+-- Variável para controlar o estado do Auto Click
+AutoClickModule.AutoClickEnabled = false
+
+-- Função para realizar um clique
 function AutoClickModule.Click()
-    wait(0.1)
-    VirtualUser:CaptureController()
-    VirtualUser:Button1Down(Vector2.new(1280, 672))
+    while AutoClickModule.AutoClickEnabled do
+        wait(0.1) -- Delay de 0.1 segundos entre os cliques
+        VirtualUser:CaptureController()
+        VirtualUser:Button1Down(Vector2.new(1280, 672))  -- Posição do clique
+        VirtualUser:Button1Up(Vector2.new(1280, 672))    -- Solta o botão
+    end
 end
 
+-- Função para ativar o Auto Click
+function AutoClickModule.StartAutoClick()
+    if not AutoClickModule.AutoClickEnabled then
+        AutoClickModule.AutoClickEnabled = true
+        AutoClickModule.Click()  -- Inicia o loop de cliques
+    end
+end
+
+-- Função para desativar o Auto Click
+function AutoClickModule.StopAutoClick()
+    AutoClickModule.AutoClickEnabled = false
+end
+
+-- Função para ativar Haki
 function AutoClickModule.AutoHaki()
     if not Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
         ReplicatedStorage.Remotes.CommF_:InvokeServer("Buso")
     end
 end
 
+-- Função para desequipar a arma
 function AutoClickModule.UnEquipWeapon(Weapon)
     if Players.LocalPlayer.Character:FindFirstChild(Weapon) then
         _G.NotAutoEquip = true
@@ -28,6 +48,7 @@ function AutoClickModule.UnEquipWeapon(Weapon)
     end
 end
 
+-- Função para equipar a arma
 function AutoClickModule.EquipWeapon(ToolSe)
     if not _G.NotAutoEquip then
         if Players.LocalPlayer.Backpack:FindFirstChild(ToolSe) then
@@ -38,10 +59,12 @@ function AutoClickModule.EquipWeapon(ToolSe)
     end
 end
 
+-- Função para calcular a distância
 function AutoClickModule.GetDistance(target)
     return math.floor((target.Position - Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
 end
 
+-- Função para teleportar
 function AutoClickModule.TP(Pos)
     local Distance = (Pos.Position - Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
     local Speed
