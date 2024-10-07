@@ -1,154 +1,72 @@
--- Inicializa os serviços e variáveis necessárias
+-- AutoClickModule.lua
+local AutoClickModule = {}
+
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
--- Configurações Globais
-_G.AutoClick = false
-_G.FastAttack = true
-_G.FastAttackDelay = 0.5
-_G.Farmfast = false
-local PosY = 30  -- Distância padrão dos mobs
+function AutoClickModule.Click()
+    wait(0.1)
+    VirtualUser:CaptureController()
+    VirtualUser:Button1Down(Vector2.new(1280, 672))
+end
 
--- Função para ativar Auto Click
-M:AddToggle({
-    Name = "Auto Click[Kick]",
-    Default = false,
-    Flag = "Auto Click",
-    Save = true,
-    Callback = function(Value)
-        _G.AutoClick = Value
-    end    
-})
-
--- Captura o clique do mouse se AutoClick estiver ativado
-spawn(function()
-    RunService.RenderStepped:Connect(function()
-        if _G.AutoClick or _G.FastAttack then
-            pcall(function()
-                game:GetService('VirtualUser'):CaptureController()
-                game:GetService('VirtualUser'):Button1Down(Vector2.new(0, 1))
-            end)
-        end
-    end)
-end)
-
--- Função para ataque rápido
-function AttackHit()
-    local CombatFrameworkLib = debug.getupvalues(require(LocalPlayer.PlayerScripts.CombatFramework))
-    local CmrFwLib = CombatFrameworkLib[2]
-    
-    local bladehit = require(ReplicatedStorage.CombatFramework.RigLib).getBladeHits(LocalPlayer.Character, {LocalPlayer.Character.HumanoidRootPart}, 60)
-    local cac, hash = {}, {}
-    
-    for _, v in pairs(bladehit) do
-        if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
-            table.insert(cac, v.Parent.HumanoidRootPart)
-            hash[v.Parent] = true
-        end
-    end
-
-    if #cac > 0 then
-        pcall(function()
-            CmrFwLib.activeController.timeToNextAttack = 1
-            CmrFwLib.activeController.attacking = false
-            CmrFwLib.activeController.blocking = false
-            CmrFwLib.activeController.hitboxMagnitude = 120
-            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", cac, 1, "")
-        end)
+function AutoClickModule.AutoHaki()
+    if not Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+        ReplicatedStorage.Remotes.CommF_:InvokeServer("Buso")
     end
 end
 
--- Loop de ataque rápido
-spawn(function()
-    while wait(0.1) do
-        if _G.FastAttack then
-            pcall(function()
-                repeat
-                    wait(_G.FastAttackDelay)
-                    AttackHit()
-                until not _G.FastAttack
-            end)
+function AutoClickModule.UnEquipWeapon(Weapon)
+    if Players.LocalPlayer.Character:FindFirstChild(Weapon) then
+        _G.NotAutoEquip = true
+        wait(0.5)
+        Players.LocalPlayer.Character:FindFirstChild(Weapon).Parent = Players.LocalPlayer.Backpack
+        wait(0.1)
+        _G.NotAutoEquip = false
+    end
+end
+
+function AutoClickModule.EquipWeapon(ToolSe)
+    if not _G.NotAutoEquip then
+        if Players.LocalPlayer.Backpack:FindFirstChild(ToolSe) then
+            local Tool = Players.LocalPlayer.Backpack:FindFirstChild(ToolSe)
+            wait(0.1)
+            Players.LocalPlayer.Character.Humanoid:EquipTool(Tool)
         end
     end
-end)
+end
 
--- Adiciona opções para Fast Attack
-local Section = M:AddSection({
-    Name = "FastAttack :"
-})
+function AutoClickModule.GetDistance(target)
+    return math.floor((target.Position - Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+end
 
-M:AddToggle({
-    Name = "FastAttack",
-    Default = true,
-    Flag = "FastAttack",
-    Save = false,
-    Callback = function(Value)
-        _G.FastAttack = Value
-    end    
-})
+function AutoClickModule.TP(Pos)
+    local Distance = (Pos.Position - Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    local Speed
 
--- Configura o delay para o ataque rápido
-local AttackList = {"0", "0.1", "0.175", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6", "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1"}
-M:AddDropdown({
-    Name = "FastAttack Delay",
-    Default = "0.5",
-    Options = AttackList,
-    Flag = "FastAttack Delay",
-    Save = true,
-    Callback = function(Value)
-        _G.FastAttackDelay = tonumber(Value)
-    end    
-})
+    if Distance < 25 then
+        Speed = 10000
+    elseif Distance < 50 then
+        Speed = 2000
+    elseif Distance < 150 then
+        Speed = 800
+    elseif Distance < 250 then
+        Speed = 600
+    elseif Distance < 500 then
+        Speed = 400
+    elseif Distance < 750 then
+        Speed = 250
+    else
+        Speed = 200
+    end
 
--- Seções adicionais para Bypass e Distância de Mobs
-M:AddSection({
-    Name = "Bypass Teleport"
-})
+    TweenService:Create(
+        Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear),
+        {CFrame = Pos}
+    ):Play()
+end
 
-M:AddToggle({
-    Name = "Bypass TP[BETA]",
-    Default = false,
-    Flag = "Bypass TP",
-    Save = true,
-    Callback = function(Value)
-        BypassTP = true 
-    end    
-})
-
-M:AddSection({
-    Name = "Distance Mobs"
-})
-
-M:AddSlider({
-    Name = "Distance Mob",
-    Min = 0,
-    Max = 65,
-    Default = PosY,
-    Color = Color3.fromRGB(255,255,255),
-    Increment = 1,
-    ValueName = "Distance",
-    Flag = "Distance",
-    Save = true,
-    Callback = function(Value)
-        PosY = Value
-    end    
-})
-
--- Seção para Auto Farm
-M:AddSection({
-    Name = "Farm Fast : Lv 10 => 120"
-})
-
-M:AddToggle({
-    Name = "Auto Farm Fast",
-    Default = false,
-    Flag = "Farm Fast",
-    Save = true,
-    Callback = function(Value)
-        _G.Farmfast = Value
-        StopTween(_G.Farmfast)
-    end    
-})
+return AutoClickModule
