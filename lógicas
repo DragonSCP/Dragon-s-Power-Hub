@@ -1,0 +1,251 @@
+-- Função para mover o personagem suavemente
+function moveTo(location, duration)
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        local startPosition = humanoidRootPart.Position
+        local endPosition = location.Position
+        local startTime = tick()
+
+        game:GetService("RunService").RenderStepped:Connect(function()
+            local elapsedTime = tick() - startTime
+            if elapsedTime < duration then
+                local alpha = elapsedTime / duration
+                humanoidRootPart.CFrame = CFrame.new(startPosition:Lerp(endPosition, alpha))
+            else
+                humanoidRootPart.CFrame = CFrame.new(endPosition)
+                return
+            end
+        end)
+    end
+end
+
+-- Funções para checar a Lua e Gear
+function CheckMoon()
+    moon8 = "http://www.roblox.com/asset/?id=9709150401"
+    moon7 = "http://www.roblox.com/asset/?id=9709150086"
+    moon6 = "http://www.roblox.com/asset/?id=9709149680"
+    moon5 = "http://www.roblox.com/asset/?id=9709149431"
+    moon4 = "http://www.roblox.com/asset/?id=9709149052"
+    moon3 = "http://www.roblox.com/asset/?id=9709143733"
+    moon2 = "http://www.roblox.com/asset/?id=9709139597"
+    moon1 = "http://www.roblox.com/asset/?id=9709135895"
+    moonreal = MoonTextureId() -- Você pode precisar definir essa função
+    cofullmoonkothangbeo = "Bad Moon"
+    
+    if moonreal == moon5 or moonreal == moon4 then
+        if moonreal == moon5 then
+            cofullmoonkothangbeo = "Full Moon"
+        elseif moonreal == moon4 then
+            cofullmoonkothangbeo = "Next Night"
+        end
+    end
+    
+    return cofullmoonkothangbeo
+end
+
+function getBlueGear()
+    if game.workspace.Map:FindFirstChild("MysticIsland") then
+        for _, v in pairs(game.workspace.Map.MysticIsland:GetChildren()) do
+            if v:IsA("MeshPart") and v.MeshId == "rbxassetid://10153114969" then
+                return v
+            end
+        end
+    end
+end
+
+function getHighestPoint()
+    if not game.workspace.Map:FindFirstChild("MysticIsland") then
+        return nil
+    end
+    
+    for _, v in pairs(game:GetService("Workspace").Map.MysticIsland:GetDescendants()) do
+        if v:IsA("MeshPart") then
+            if v.MeshId == "rbxassetid://6745037796" then
+                return v
+            end
+        end
+    end
+end
+
+function MoveCamtoMoon()
+    workspace.CurrentCamera.CFrame = CFrame.new(
+        workspace.CurrentCamera.CFrame.Position,
+        game:GetService("Lighting"):GetMoonDirection() + workspace.CurrentCamera.CFrame.Position
+    )
+end
+
+-- Race v2 Menu
+local function createRaceV2Menu(R)
+    local Section = R:AddSection({ Name = "Race v2" })
+
+    R:AddToggle({
+        Name = "Auto Race(V1 - V2 - V3)",
+        Default = false,
+        Flag = "Auto Race",
+        Save = true,
+        Callback = function(Value)
+            handleAutoRace(Value)
+        end    
+    })
+
+    local PullLeverSection = R:AddSection({ Name = "Pull Lever" })
+
+    R:AddToggle({
+        Name = "Auto Pull Lever",
+        Default = false,
+        Flag = "Auto Pull Lever",
+        Save = true,
+        Callback = function(Value)
+            handleAutoPullLever(Value)
+        end    
+    })
+
+    R:AddToggle({
+        Name = "Auto Turn On Race v3",
+        Default = false,
+        Flag = "Auto Turn On Race v3",
+        Save = true,
+        Callback = function(Value)
+            handleAutoTurnOnRaceV3(Value)
+        end    
+    })
+
+    R:AddToggle({
+        Name = "Auto Turn On Race v4",
+        Default = false,
+        Flag = "Auto Turn On Race v4",
+        Save = true,
+        Callback = function(Value)
+            handleAutoTurnOnRaceV4(Value)
+        end    
+    })
+
+    R:AddToggle({
+        Name = "Move Cam to Moon",
+        Default = false,
+        Flag = "Move Cam to Moon",
+        Save = true,
+        Callback = function(Value)
+            handleMoveCamToMoon(Value)
+        end    
+    })
+
+    R:AddButton({
+        Name = "Move to Gear",
+        Callback = function()
+            local gear = getBlueGear()
+            if gear then
+                moveTo(gear.CFrame, 5) -- Mover para o Gear encontrado
+            else
+                print("Gear não encontrado.")
+            end
+        end    
+    })
+end
+
+local function handleAutoRace(Value)
+    print("Auto Race is now " .. tostring(Value))
+end
+
+local function handleAutoPullLever(Value)
+    _G.AutoPullLever = Value
+    StopTween("AutoPullLever")
+    print("Auto Pull Lever is now " .. tostring(Value))
+end
+
+local function handleAutoTurnOnRaceV3(Value)
+    _G.V3 = Value
+    spawn(function()
+        while wait() do
+            pcall(function()
+                if _G.V3 then
+                    game:GetService("VirtualInputManager"):SendKeyEvent(true, "T", false, game)
+                    wait(0.1)
+                    game:GetService("VirtualInputManager"):SendKeyEvent(false, "T", false, game)
+                end
+            end)
+        end
+    end)
+    print("Auto Turn On Race v3 is now " .. tostring(Value))
+end
+
+local function handleAutoTurnOnRaceV4(Value)
+    _G.V4 = Value
+    spawn(function()
+        while wait() do
+            pcall(function()
+                if _G.V4 then
+                    game:GetService("VirtualInputManager"):SendKeyEvent(true, "Y", false, game)
+                    wait(0.1)
+                    game:GetService("VirtualInputManager"):SendKeyEvent(false, "Y", false, game)
+                end
+            end)
+        end
+    end)
+    print("Auto Turn On Race v4 is now " .. tostring(Value))
+end
+
+local function handleMoveCamToMoon(Value)
+    _G.AutoDooHee = Value
+    spawn(function()
+        while wait() do
+            pcall(function()
+                if _G.AutoDooHee then
+                    MoveCamtoMoon()
+                end
+            end)
+        end
+    end)
+    print("Move Cam to Moon is now " .. tostring(Value))
+end
+
+-- Código para gerenciamento de ataques e animações
+local Client = game.Players.LocalPlayer
+local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
+local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
+            if not shared.cpc then shared.cpc = STOP.play end
+            
+            STOPRL.wrapAttackAnimationAsync = function(a, b, c, d, func)
+                local Hits = STOPRL.getBladeHits(b, c, d)
+                if Hits then
+                    if _G.FastAttack then
+                        STOP.play = function() end
+                        a:Play(0.01, 0.01, 0.01)
+                        func(Hits)
+                        STOP.play = shared.cpc
+                        wait(a.length * 0.5)
+                        a:Stop()
+                    else
+                        a:Play()
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+-- Adicionar funções para mover para o ponto mais alto
+spawn(function()
+    if TwenetoHighestPoint then
+        local HighestPoint = getHighestPoint()
+        if HighestPoint then
+            moveTo(HighestPoint.CFrame * CFrame.new(0, 211.88, 0), 5) -- Mover para o ponto mais alto
+        end
+    end
+end)
+
+-- Adicionar funções para mover para o Gear azul
+spawn(function()
+    if TweentoBlueGear then
+        local BlueGear = getBlueGear()
+        if BlueGear then
+            moveTo(BlueGear.CFrame, 5) -- Mover para o Gear encontrado
+        end
+    end
+end)
